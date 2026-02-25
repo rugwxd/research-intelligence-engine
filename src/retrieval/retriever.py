@@ -49,6 +49,21 @@ class Retriever:
         query_embedding = self.embedder.embed_query(query)
         candidates = self.store.search(query_embedding, top_k=self.config.top_k)
 
+        # If initial retrieval is poor, try with cleaned query
+        if not candidates or candidates[0].score < self.config.similarity_threshold:
+            cleaned = self._clean_query(query)
+            if cleaned != query:
+                logger.debug("Retrying with cleaned query: %s", cleaned[:80])
+                alt_embedding = self.embedder.embed_query(cleaned)
+                alt_candidates = self.store.search(alt_embedding, top_k=self.config.top_k)
+                # Merge and deduplicate, keeping best scores
+                seen = {r.chunk.chunk_id for r in candidates}
+                for r in alt_candidates:
+                    if r.chunk.chunk_id not in seen:
+                        candidates.append(r)
+                        seen.add(r.chunk.chunk_id)
+                candidates.sort(key=lambda r: r.score, reverse=True)
+
         # Filter below threshold
         filtered = [r for r in candidates if r.score >= self.config.similarity_threshold]
 
@@ -88,6 +103,14 @@ class Retriever:
         # Re-sort by score descending
         deduped = sorted(best_by_paper.values(), key=lambda r: r.score, reverse=True)
         return deduped
+
+    @staticmethod
+    def _clean_query(query: str) -> str:
+        """Remove filler words and normalize query for better embedding match."""
+        stopwords = {"what", "is", "the", "how", "does", "do", "can", "a", "an", "of", "in", "for"}
+        tokens = query.lower().strip("?!.").split()
+        cleaned = " ".join(t for t in tokens if t not in stopwords)
+        return cleaned if len(cleaned) > 5 else query
 
     @staticmethod
     def format_context(results: list[RetrievalResult]) -> str:
