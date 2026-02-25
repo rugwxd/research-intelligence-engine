@@ -8,9 +8,8 @@ and multi-layer evaluation.
 
 import logging
 import time
-from pathlib import Path
 
-from src.config import Settings, load_config, setup_logging, PROJECT_ROOT
+from src.config import PROJECT_ROOT, Settings, load_config, setup_logging
 from src.data.arxiv_fetcher import ArxivFetcher
 from src.data.models import RAGResponse
 from src.evaluation.metrics import HeuristicEvaluator
@@ -77,6 +76,7 @@ class RAGPipeline:
         """Lazy-load LLM judge to avoid unnecessary API client init."""
         if self._llm_judge is None and self.config.anthropic_api_key:
             from src.evaluation.llm_judge import LLMJudge
+
             self._llm_judge = LLMJudge(self.config.anthropic_api_key)
         return self._llm_judge
 
@@ -112,6 +112,7 @@ class RAGPipeline:
             # Optional: extract full PDF text
             if extract_pdfs:
                 from src.data.pdf_extractor import PDFExtractor
+
                 extractor = PDFExtractor(max_papers=max_pdfs)
                 cache_dir = PROJECT_ROOT / "data" / "raw" / "pdfs"
                 full_texts = extractor.extract_batch(papers, output_dir=cache_dir)
@@ -140,7 +141,9 @@ class RAGPipeline:
         elapsed = time.perf_counter() - start
         logger.info(
             "Ingestion complete: %d papers -> %d chunks indexed in %.1fs",
-            len(papers), len(chunks), elapsed,
+            len(papers),
+            len(chunks),
+            elapsed,
         )
         metrics.observe("ingestion.duration_s", elapsed)
         return len(chunks)
@@ -183,24 +186,23 @@ class RAGPipeline:
 
             # Hybrid: merge with BM25 results
             if self.bm25_index is not None:
-                bm25_results = self.bm25_index.search(
-                    question, top_k=self.config.retrieval.top_k
-                )
+                bm25_results = self.bm25_index.search(question, top_k=self.config.retrieval.top_k)
                 results = reciprocal_rank_fusion(
                     [dense_results, bm25_results],
                     weights=[0.6, 0.4],
-                )[:self.config.retrieval.top_k]
+                )[: self.config.retrieval.top_k]
             else:
                 results = dense_results
 
             # Cross-encoder reranking
             if self.reranker is not None:
                 results = self.reranker.rerank(
-                    question, results,
+                    question,
+                    results,
                     top_k=self.config.retrieval.rerank_top_k,
                 )
             else:
-                results = results[:self.config.retrieval.rerank_top_k]
+                results = results[: self.config.retrieval.rerank_top_k]
 
         # Generate answer
         with LatencyTracker(metrics, "generation"):
@@ -213,9 +215,7 @@ class RAGPipeline:
             # RAGAS evaluation (optional)
             if use_ragas and self.ragas_eval.is_available:
                 ragas_scores = self.ragas_eval.evaluate_single(response)
-                response.eval_scores.update({
-                    f"ragas_{k}": v for k, v in ragas_scores.items()
-                })
+                response.eval_scores.update({f"ragas_{k}": v for k, v in ragas_scores.items()})
 
             # LLM-as-judge evaluation (optional, highest quality)
             if use_llm_judge and self.llm_judge is not None:
@@ -227,7 +227,9 @@ class RAGPipeline:
 
         logger.info(
             "Query answered in %.1fms (mode=%s): %s",
-            response.latency_ms, self.retrieval_mode, question[:80],
+            response.latency_ms,
+            self.retrieval_mode,
+            question[:80],
         )
         return response
 

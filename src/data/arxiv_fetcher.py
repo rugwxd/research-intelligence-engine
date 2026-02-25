@@ -16,7 +16,7 @@ import requests
 from tenacity import retry, stop_after_attempt, wait_exponential
 from tqdm import tqdm
 
-from src.config import ArxivConfig, PROJECT_ROOT
+from src.config import PROJECT_ROOT, ArxivConfig
 from src.data.models import Paper
 
 logger = logging.getLogger(__name__)
@@ -30,9 +30,7 @@ class ArxivFetcher:
     def __init__(self, config: ArxivConfig) -> None:
         self.config = config
         self.session = requests.Session()
-        self.session.headers.update({
-            "User-Agent": "ResearchIntelligenceEngine/1.0"
-        })
+        self.session.headers.update({"User-Agent": "ResearchIntelligenceEngine/1.0"})
 
     @retry(
         stop=stop_after_attempt(3),
@@ -137,15 +135,15 @@ class ArxivFetcher:
 
                 logger.debug(
                     "Query '%s': fetched %d papers (offset %d)",
-                    query, fetched_for_query, start,
+                    query,
+                    fetched_for_query,
+                    start,
                 )
 
                 # Respect arXiv rate limits
                 time.sleep(self.config.rate_limit_seconds)
 
-            logger.info(
-                "Query '%s': %d unique papers collected", query, fetched_for_query
-            )
+            logger.info("Query '%s': %d unique papers collected", query, fetched_for_query)
 
         logger.info("Total unique papers fetched: %d", len(all_papers))
         return all_papers

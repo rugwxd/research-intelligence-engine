@@ -6,12 +6,11 @@ index creation, persistence, and similarity search operations.
 
 import logging
 import pickle
-from pathlib import Path
 
 import faiss
 import numpy as np
 
-from src.config import VectorDBConfig, PROJECT_ROOT
+from src.config import PROJECT_ROOT, VectorDBConfig
 from src.data.models import DocumentChunk, RetrievalResult
 
 logger = logging.getLogger(__name__)
@@ -52,9 +51,7 @@ class FAISSStore:
             embeddings: Pre-computed embeddings array of shape (n, dim).
         """
         if embeddings.shape[0] != len(chunks):
-            raise ValueError(
-                f"Mismatch: {embeddings.shape[0]} embeddings vs {len(chunks)} chunks"
-            )
+            raise ValueError(f"Mismatch: {embeddings.shape[0]} embeddings vs {len(chunks)} chunks")
 
         self.chunks = chunks
         self.index = self._create_index()
@@ -98,10 +95,12 @@ class FAISSStore:
         for score, idx in zip(scores[0], indices[0]):
             if idx < 0:
                 continue
-            results.append(RetrievalResult(
-                chunk=self.chunks[idx],
-                score=float(score),
-            ))
+            results.append(
+                RetrievalResult(
+                    chunk=self.chunks[idx],
+                    score=float(score),
+                )
+            )
 
         return results
 

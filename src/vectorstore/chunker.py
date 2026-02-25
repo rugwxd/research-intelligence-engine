@@ -149,12 +149,14 @@ class SemanticChunker(BaseChunker):
         """Lazy-load a lightweight sentence embedder for boundary detection."""
         if self._embedder is None:
             from sentence_transformers import SentenceTransformer
+
             self._embedder = SentenceTransformer("all-MiniLM-L6-v2")
         return self._embedder
 
     def _split_sentences(self, text: str) -> list[str]:
         """Split text into sentences using regex-based rules."""
         import re
+
         sentences = re.split(r"(?<=[.!?])\s+", text)
         return [s.strip() for s in sentences if len(s.strip()) > 10]
 
@@ -178,7 +180,7 @@ class SemanticChunker(BaseChunker):
         # Group sentences into overlapping windows for embedding
         groups = []
         for i in range(0, len(sentences), self.sentence_group_size):
-            group = " ".join(sentences[i:i + self.sentence_group_size])
+            group = " ".join(sentences[i : i + self.sentence_group_size])
             groups.append(group)
 
         if not groups:
@@ -212,7 +214,7 @@ class SemanticChunker(BaseChunker):
                     words = chunk_text.split()
                     words_per_sub = max(1, self.chunk_size // 6)
                     for start in range(0, len(words), words_per_sub):
-                        sub = " ".join(words[start:start + words_per_sub])
+                        sub = " ".join(words[start : start + words_per_sub])
                         if len(sub) >= self.min_chunk_length:
                             yield sub
                 else:

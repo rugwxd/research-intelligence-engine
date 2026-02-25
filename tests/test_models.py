@@ -2,9 +2,7 @@
 
 from datetime import datetime
 
-import pytest
-
-from src.data.models import DocumentChunk, Paper, RAGResponse, RetrievalResult
+from src.data.models import DocumentChunk, Paper, RAGResponse
 
 
 class TestPaper:
@@ -42,8 +40,15 @@ class TestPaper:
         )
         data = paper.to_dict()
         expected_keys = {
-            "arxiv_id", "title", "abstract", "authors", "categories",
-            "published", "updated", "pdf_url", "primary_category",
+            "arxiv_id",
+            "title",
+            "abstract",
+            "authors",
+            "categories",
+            "published",
+            "updated",
+            "pdf_url",
+            "primary_category",
         }
         assert set(data.keys()) == expected_keys
 

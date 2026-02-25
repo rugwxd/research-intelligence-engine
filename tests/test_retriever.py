@@ -1,6 +1,6 @@
 """Tests for the retrieval pipeline."""
 
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock
 
 import numpy as np
 import pytest
@@ -80,9 +80,7 @@ class TestRetriever:
 
     def test_retrieve_respects_rerank_top_k(self, config, mock_store, mock_embedder):
         config.rerank_top_k = 2
-        mock_store.search.return_value = [
-            _make_result(f"p{i}", 0.9 - i * 0.1) for i in range(5)
-        ]
+        mock_store.search.return_value = [_make_result(f"p{i}", 0.9 - i * 0.1) for i in range(5)]
         retriever = Retriever(config, mock_store, mock_embedder)
         results = retriever.retrieve("test query")
 

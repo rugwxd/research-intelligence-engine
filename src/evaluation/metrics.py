@@ -10,7 +10,7 @@ from collections import Counter
 
 import numpy as np
 
-from src.data.models import RAGResponse, RetrievalResult
+from src.data.models import RAGResponse
 
 logger = logging.getLogger(__name__)
 
@@ -104,9 +104,7 @@ class HeuristicEvaluator:
         answer_lower = response.answer.lower()
 
         # Check how many sources are referenced
-        cited_sources = set(
-            int(m) for m in re.findall(r"\[Source\s*(\d+)\]", response.answer)
-        )
+        cited_sources = set(int(m) for m in re.findall(r"\[Source\s*(\d+)\]", response.answer))
         source_coverage = len(cited_sources) / max(len(response.sources), 1)
 
         # Check topic coverage: what fraction of source key terms appear in answer
@@ -159,17 +157,106 @@ class HeuristicEvaluator:
     def _extract_content_words(text: str) -> list[str]:
         """Extract meaningful content words, filtering stop words."""
         stop_words = {
-            "the", "a", "an", "is", "are", "was", "were", "be", "been", "being",
-            "have", "has", "had", "do", "does", "did", "will", "would", "could",
-            "should", "may", "might", "can", "shall", "to", "of", "in", "for",
-            "on", "with", "at", "by", "from", "as", "into", "through", "during",
-            "before", "after", "above", "below", "between", "and", "but", "or",
-            "not", "no", "nor", "so", "yet", "both", "either", "neither", "each",
-            "every", "all", "any", "few", "more", "most", "other", "some", "such",
-            "than", "too", "very", "just", "also", "that", "this", "these", "those",
-            "it", "its", "they", "them", "their", "we", "our", "you", "your", "he",
-            "she", "his", "her", "which", "what", "who", "whom", "how", "when",
-            "where", "why", "if", "then", "else", "about", "up", "out", "over",
+            "the",
+            "a",
+            "an",
+            "is",
+            "are",
+            "was",
+            "were",
+            "be",
+            "been",
+            "being",
+            "have",
+            "has",
+            "had",
+            "do",
+            "does",
+            "did",
+            "will",
+            "would",
+            "could",
+            "should",
+            "may",
+            "might",
+            "can",
+            "shall",
+            "to",
+            "of",
+            "in",
+            "for",
+            "on",
+            "with",
+            "at",
+            "by",
+            "from",
+            "as",
+            "into",
+            "through",
+            "during",
+            "before",
+            "after",
+            "above",
+            "below",
+            "between",
+            "and",
+            "but",
+            "or",
+            "not",
+            "no",
+            "nor",
+            "so",
+            "yet",
+            "both",
+            "either",
+            "neither",
+            "each",
+            "every",
+            "all",
+            "any",
+            "few",
+            "more",
+            "most",
+            "other",
+            "some",
+            "such",
+            "than",
+            "too",
+            "very",
+            "just",
+            "also",
+            "that",
+            "this",
+            "these",
+            "those",
+            "it",
+            "its",
+            "they",
+            "them",
+            "their",
+            "we",
+            "our",
+            "you",
+            "your",
+            "he",
+            "she",
+            "his",
+            "her",
+            "which",
+            "what",
+            "who",
+            "whom",
+            "how",
+            "when",
+            "where",
+            "why",
+            "if",
+            "then",
+            "else",
+            "about",
+            "up",
+            "out",
+            "over",
         }
         words = re.findall(r"\b[a-z]{3,}\b", text.lower())
         return [w for w in words if w not in stop_words]

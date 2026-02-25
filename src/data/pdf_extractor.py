@@ -7,7 +7,6 @@ Includes section detection and cleaning for academic paper formatting.
 
 import logging
 import re
-import tempfile
 import time
 from pathlib import Path
 
@@ -32,9 +31,7 @@ class PDFExtractor:
         self.rate_limit = rate_limit
         self.max_papers = max_papers
         self.session = requests.Session()
-        self.session.headers.update({
-            "User-Agent": "ResearchIntelligenceEngine/1.0"
-        })
+        self.session.headers.update({"User-Agent": "ResearchIntelligenceEngine/1.0"})
 
     @retry(
         stop=stop_after_attempt(3),
@@ -90,7 +87,7 @@ class PDFExtractor:
         for pattern in ref_patterns:
             match = re.search(pattern, text)
             if match:
-                text = text[:match.start()]
+                text = text[: match.start()]
                 break
 
         # Normalize whitespace
@@ -119,7 +116,9 @@ class PDFExtractor:
 
             logger.debug(
                 "Extracted %d chars from %s (raw: %d)",
-                len(cleaned), paper.arxiv_id, len(raw_text),
+                len(cleaned),
+                paper.arxiv_id,
+                len(raw_text),
             )
             return cleaned
         except Exception as e:
@@ -142,7 +141,7 @@ class PDFExtractor:
         """
         papers_to_process = papers
         if self.max_papers:
-            papers_to_process = papers[:self.max_papers]
+            papers_to_process = papers[: self.max_papers]
 
         results = {}
         succeeded = 0
@@ -174,6 +173,8 @@ class PDFExtractor:
 
         logger.info(
             "PDF extraction complete: %d succeeded, %d failed out of %d",
-            succeeded, failed, len(papers_to_process),
+            succeeded,
+            failed,
+            len(papers_to_process),
         )
         return results

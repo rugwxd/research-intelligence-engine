@@ -69,6 +69,7 @@ class TestMetricsCollector:
 class TestLatencyTracker:
     def test_tracks_latency(self, collector):
         import time
+
         with LatencyTracker(collector, "test_op"):
             time.sleep(0.01)
 

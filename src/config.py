@@ -9,19 +9,20 @@ import yaml
 from pydantic import BaseModel, Field
 from pydantic_settings import BaseSettings
 
-
 PROJECT_ROOT = Path(__file__).parent.parent.resolve()
 
 
 class ArxivConfig(BaseModel):
     max_results_per_query: int = 150
-    queries: list[str] = Field(default_factory=lambda: [
-        "large language models",
-        "transformer architecture",
-        "reinforcement learning",
-        "computer vision deep learning",
-        "neural network optimization",
-    ])
+    queries: list[str] = Field(
+        default_factory=lambda: [
+            "large language models",
+            "transformer architecture",
+            "reinforcement learning",
+            "computer vision deep learning",
+            "neural network optimization",
+        ]
+    )
     rate_limit_seconds: float = 3.0
     output_dir: str = "data/raw"
 

@@ -7,10 +7,8 @@ and context assembly for the generation stage.
 import logging
 import time
 
-import numpy as np
-
 from src.config import RetrievalConfig
-from src.data.models import DocumentChunk, RetrievalResult
+from src.data.models import RetrievalResult
 from src.vectorstore.embedder import Embedder
 from src.vectorstore.faiss_store import FAISSStore
 
@@ -52,27 +50,29 @@ class Retriever:
         candidates = self.store.search(query_embedding, top_k=self.config.top_k)
 
         # Filter below threshold
-        filtered = [
-            r for r in candidates
-            if r.score >= self.config.similarity_threshold
-        ]
+        filtered = [r for r in candidates if r.score >= self.config.similarity_threshold]
 
         if not filtered:
-            logger.warning("No results above threshold %.2f for query: %s",
-                           self.config.similarity_threshold, query[:80])
+            logger.warning(
+                "No results above threshold %.2f for query: %s",
+                self.config.similarity_threshold,
+                query[:80],
+            )
             # Fall back to top results regardless of threshold
-            filtered = candidates[:self.config.rerank_top_k]
+            filtered = candidates[: self.config.rerank_top_k]
 
         # Deduplicate: keep only the best-scoring chunk per paper
         deduped = self._deduplicate_by_paper(filtered)
 
         # Take top rerank_top_k results
-        results = deduped[:self.config.rerank_top_k]
+        results = deduped[: self.config.rerank_top_k]
 
         elapsed = (time.perf_counter() - start) * 1000
         logger.info(
             "Retrieved %d results for query (%.1fms): %s",
-            len(results), elapsed, query[:80],
+            len(results),
+            elapsed,
+            query[:80],
         )
 
         return results

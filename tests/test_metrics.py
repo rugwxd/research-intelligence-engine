@@ -73,7 +73,8 @@ class TestHeuristicEvaluator:
             sources=[
                 RetrievalResult(
                     chunk=DocumentChunk(
-                        chunk_id="c1", paper_id="p1",
+                        chunk_id="c1",
+                        paper_id="p1",
                         text="Actual source content about neural networks.",
                         metadata={"title": "T", "authors": []},
                     ),
@@ -104,7 +105,9 @@ class TestHeuristicEvaluator:
 
     def test_empty_sources(self, evaluator):
         response = RAGResponse(
-            query="test", answer="No sources available.", sources=[],
+            query="test",
+            answer="No sources available.",
+            sources=[],
         )
         scores = evaluator.evaluate(response)
         assert all(0.0 <= v <= 1.0 for v in scores.values())

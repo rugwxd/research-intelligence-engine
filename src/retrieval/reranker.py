@@ -71,10 +71,12 @@ class CrossEncoderReranker:
         # Attach cross-encoder scores and sort
         scored_results = []
         for result, ce_score in zip(candidates, scores):
-            scored_results.append(RetrievalResult(
-                chunk=result.chunk,
-                score=float(ce_score),
-            ))
+            scored_results.append(
+                RetrievalResult(
+                    chunk=result.chunk,
+                    score=float(ce_score),
+                )
+            )
 
         scored_results.sort(key=lambda r: r.score, reverse=True)
 

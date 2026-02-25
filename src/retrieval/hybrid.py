@@ -65,7 +65,9 @@ def reciprocal_rank_fusion(
 
     logger.debug(
         "RRF fused %d lists -> %d unique results (top score: %.4f)",
-        len(ranked_lists), len(fused), fused[0].score if fused else 0,
+        len(ranked_lists),
+        len(fused),
+        fused[0].score if fused else 0,
     )
 
     return fused

@@ -15,22 +15,26 @@ def bm25():
 def sample_chunks():
     return [
         DocumentChunk(
-            chunk_id="c1", paper_id="p1",
+            chunk_id="c1",
+            paper_id="p1",
             text="Transformer models use self-attention mechanisms for sequence processing",
             metadata={"title": "Transformers", "authors": []},
         ),
         DocumentChunk(
-            chunk_id="c2", paper_id="p2",
+            chunk_id="c2",
+            paper_id="p2",
             text="Convolutional neural networks excel at image classification tasks",
             metadata={"title": "CNNs", "authors": []},
         ),
         DocumentChunk(
-            chunk_id="c3", paper_id="p3",
+            chunk_id="c3",
+            paper_id="p3",
             text="Reinforcement learning agents optimize cumulative reward signals",
             metadata={"title": "RL", "authors": []},
         ),
         DocumentChunk(
-            chunk_id="c4", paper_id="p4",
+            chunk_id="c4",
+            paper_id="p4",
             text="BERT uses bidirectional transformer pre-training for language understanding",
             metadata={"title": "BERT", "authors": []},
         ),

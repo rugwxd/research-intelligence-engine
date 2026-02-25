@@ -46,7 +46,9 @@ class MetricsCollector:
         self._histograms: dict[str, list[float]] = defaultdict(list)
         self._gauges: dict[str, float] = {}
 
-    def increment(self, name: str, value: float = 1.0, labels: dict[str, str] | None = None) -> None:
+    def increment(
+        self, name: str, value: float = 1.0, labels: dict[str, str] | None = None
+    ) -> None:
         """Increment a counter metric."""
         key = self._key(name, labels)
         with self._lock:
@@ -113,7 +115,8 @@ class MetricsCollector:
                 lines.append(f"# TYPE {metric_name} summary")
                 lines.append(f'{metric_name}{{quantile="0.5"}} {sorted_vals[int(n * 0.5)]}')
                 lines.append(f'{metric_name}{{quantile="0.9"}} {sorted_vals[int(n * 0.9)]}')
-                lines.append(f'{metric_name}{{quantile="0.99"}} {sorted_vals[min(int(n * 0.99), n - 1)]}')
+                p99_idx = min(int(n * 0.99), n - 1)
+                lines.append(f'{metric_name}{{quantile="0.99"}} {sorted_vals[p99_idx]}')
                 lines.append(f"{metric_name}_count {n}")
                 lines.append(f"{metric_name}_sum {sum(sorted_vals)}")
 
@@ -194,6 +197,7 @@ def health_check() -> dict[str, Any]:
 
     # Check API key
     import os
+
     has_key = bool(os.getenv("ANTHROPIC_API_KEY"))
     status["components"]["anthropic_api"] = {
         "status": "configured" if has_key else "missing_key",

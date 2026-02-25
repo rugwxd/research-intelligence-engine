@@ -21,7 +21,8 @@ logger = logging.getLogger(__name__)
 
 FAITHFULNESS_PROMPT = """You are evaluating the faithfulness of a RAG system's answer.
 
-Faithfulness measures whether every claim in the answer is supported by the provided source documents.
+Faithfulness measures whether every claim in the answer is supported
+by the provided source documents.
 
 ## Source Documents
 {context}
@@ -34,13 +35,15 @@ Faithfulness measures whether every claim in the answer is supported by the prov
 
 ## Task
 1. Extract each distinct factual claim from the answer.
-2. For each claim, determine if it is SUPPORTED, PARTIALLY SUPPORTED, or NOT SUPPORTED by the sources.
+2. For each claim, determine if it is SUPPORTED, PARTIALLY SUPPORTED,
+   or NOT SUPPORTED by the sources.
 3. Calculate the faithfulness score as: (supported + 0.5 * partially_supported) / total_claims
 
 Respond in this exact JSON format:
 {{
     "claims": [
-        {{"claim": "...", "verdict": "SUPPORTED|PARTIALLY_SUPPORTED|NOT_SUPPORTED", "evidence": "..."}}
+        {{"claim": "...", "verdict": "SUPPORTED|PARTIALLY_SUPPORTED|NOT_SUPPORTED",
+          "evidence": "..."}}
     ],
     "score": <float between 0.0 and 1.0>,
     "reasoning": "..."
@@ -63,7 +66,8 @@ Calculate the relevance score as: (highly * 1.0 + somewhat * 0.5) / total_docume
 Respond in this exact JSON format:
 {{
     "documents": [
-        {{"source": "...", "verdict": "HIGHLY_RELEVANT|SOMEWHAT_RELEVANT|NOT_RELEVANT", "reason": "..."}}
+        {{"source": "...", "verdict": "HIGHLY_RELEVANT|SOMEWHAT_RELEVANT|NOT_RELEVANT",
+          "reason": "..."}}
     ],
     "score": <float between 0.0 and 1.0>,
     "reasoning": "..."

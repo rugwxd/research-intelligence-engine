@@ -25,6 +25,7 @@ def _import_ragas():
             context_recall,
             faithfulness,
         )
+
         return evaluate, {
             "faithfulness": faithfulness,
             "answer_relevancy": answer_relevancy,
@@ -83,9 +84,7 @@ class RagasEvaluator:
         metrics_to_use = list(self._metrics.values())
         if not ground_truth and "context_recall" in self._metrics:
             # context_recall requires ground truth
-            metrics_to_use = [
-                m for k, m in self._metrics.items() if k != "context_recall"
-            ]
+            metrics_to_use = [m for k, m in self._metrics.items() if k != "context_recall"]
 
         try:
             result = self._evaluate_fn(dataset, metrics=metrics_to_use)
@@ -130,9 +129,7 @@ class RagasEvaluator:
 
         metrics_to_use = list(self._metrics.values())
         if not ground_truths and "context_recall" in self._metrics:
-            metrics_to_use = [
-                m for k, m in self._metrics.items() if k != "context_recall"
-            ]
+            metrics_to_use = [m for k, m in self._metrics.items() if k != "context_recall"]
 
         try:
             result = self._evaluate_fn(dataset, metrics=metrics_to_use)

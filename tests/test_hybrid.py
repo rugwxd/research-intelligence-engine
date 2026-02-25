@@ -8,7 +8,8 @@ from src.retrieval.hybrid import reciprocal_rank_fusion
 
 def _make_result(chunk_id: str, paper_id: str, score: float) -> RetrievalResult:
     chunk = DocumentChunk(
-        chunk_id=chunk_id, paper_id=paper_id,
+        chunk_id=chunk_id,
+        paper_id=paper_id,
         text=f"Text for {chunk_id}",
         metadata={"title": f"Paper {paper_id}", "authors": []},
     )

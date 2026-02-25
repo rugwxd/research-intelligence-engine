@@ -1,7 +1,5 @@
 """Tests for configuration management."""
 
-import pytest
-
 from src.config import (
     ArxivConfig,
     ChunkingConfig,

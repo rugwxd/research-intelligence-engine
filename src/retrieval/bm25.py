@@ -7,7 +7,6 @@ Used alongside FAISS dense retrieval for reciprocal rank fusion.
 import logging
 import math
 import re
-from collections import Counter
 
 from src.data.models import DocumentChunk, RetrievalResult
 
@@ -57,7 +56,9 @@ class BM25Index:
 
         logger.info(
             "Built BM25 index: %d docs, %d unique terms, avg length %.1f",
-            self.n_docs, len(self.doc_freqs), self.avg_doc_length,
+            self.n_docs,
+            len(self.doc_freqs),
+            self.avg_doc_length,
         )
 
     def search(self, query: str, top_k: int = 10) -> list[RetrievalResult]:
@@ -82,10 +83,12 @@ class BM25Index:
         results = []
         for idx in top_indices:
             if scores[idx] > 0:
-                results.append(RetrievalResult(
-                    chunk=self.chunks[idx],
-                    score=scores[idx],
-                ))
+                results.append(
+                    RetrievalResult(
+                        chunk=self.chunks[idx],
+                        score=scores[idx],
+                    )
+                )
 
         return results
 

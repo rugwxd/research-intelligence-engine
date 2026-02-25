@@ -85,6 +85,7 @@ class TestFAISSStore:
         config.metadata_path = str(tmp_path / "test_meta.pkl")
 
         from unittest.mock import patch
+
         with patch("src.vectorstore.faiss_store.PROJECT_ROOT", tmp_path):
             store = FAISSStore(config, dimension=384)
             store.build_index(sample_chunks, sample_embeddings)
