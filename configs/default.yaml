@@ -15,6 +15,9 @@ chunking:
   chunk_size: 512
   chunk_overlap: 64
   min_chunk_length: 50
+  # strategy: sliding_window | semantic
+  # Sliding window is faster and more predictable for abstracts.
+  # Semantic chunking is better for full papers with multiple topics.
 
 embeddings:
   model_name: "all-MiniLM-L6-v2"
@@ -30,6 +33,10 @@ retrieval:
   top_k: 10
   rerank_top_k: 5
   similarity_threshold: 0.3
+  # mode: dense | hybrid | full
+  # - dense:  FAISS semantic search only
+  # - hybrid: BM25 + FAISS with reciprocal rank fusion (recommended)
+  # - full:   hybrid + cross-encoder reranking (highest quality)
 
 generation:
   model: "claude-sonnet-4-20250514"

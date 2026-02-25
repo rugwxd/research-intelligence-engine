@@ -4,7 +4,7 @@ Fetches papers from arXiv, generates embeddings, and builds the FAISS index.
 Run this before starting the Streamlit app.
 
 Usage:
-    python scripts/ingest.py [--papers 500] [--config configs/default.yaml]
+    python scripts/ingest.py [--papers 500] [--extract-pdfs] [--mode hybrid]
 """
 
 import argparse
@@ -29,14 +29,43 @@ def main():
         "--config", type=str, default=None,
         help="Path to config YAML file",
     )
+    parser.add_argument(
+        "--extract-pdfs", action="store_true",
+        help="Download and extract full PDF text (slower, higher quality)",
+    )
+    parser.add_argument(
+        "--max-pdfs", type=int, default=50,
+        help="Max number of PDFs to extract (default: 50)",
+    )
+    parser.add_argument(
+        "--mode", type=str, default="hybrid",
+        choices=["dense", "hybrid", "full"],
+        help="Retrieval mode to configure (default: hybrid)",
+    )
+    parser.add_argument(
+        "--chunking", type=str, default="sliding_window",
+        choices=["sliding_window", "semantic"],
+        help="Chunking strategy (default: sliding_window)",
+    )
     args = parser.parse_args()
 
-    pipeline = create_pipeline(args.config)
+    pipeline = create_pipeline(
+        args.config,
+        retrieval_mode=args.mode,
+        chunking_strategy=args.chunking,
+    )
 
     print(f"Starting ingestion pipeline (target: {args.papers} papers)...")
+    print(f"  Retrieval mode: {args.mode}")
+    print(f"  Chunking: {args.chunking}")
+    print(f"  PDF extraction: {args.extract_pdfs}")
     print("This will take several minutes due to arXiv rate limits.\n")
 
-    num_chunks = pipeline.ingest(target_papers=args.papers)
+    num_chunks = pipeline.ingest(
+        target_papers=args.papers,
+        extract_pdfs=args.extract_pdfs,
+        max_pdfs=args.max_pdfs,
+    )
 
     print(f"\nIngestion complete!")
     print(f"  Indexed chunks: {num_chunks}")

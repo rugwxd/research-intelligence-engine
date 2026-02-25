@@ -2,11 +2,15 @@
 python-dotenv>=1.0.0
 pydantic>=2.0.0
 pydantic-settings>=2.0.0
+pyyaml>=6.0.0
 
 # Data ingestion
 requests>=2.31.0
 feedparser>=6.0.0
 pandas>=2.0.0
+
+# PDF extraction (optional, for full paper processing)
+pymupdf>=1.23.0
 
 # Vector store & embeddings
 sentence-transformers>=2.2.0
