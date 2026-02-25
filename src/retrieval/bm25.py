@@ -117,5 +117,15 @@ class BM25Index:
 
     @staticmethod
     def _tokenize(text: str) -> list[str]:
-        """Tokenize text into lowercase terms."""
-        return re.findall(r"\b[a-z0-9]+(?:[-'][a-z0-9]+)*\b", text.lower())
+        """Tokenize text into lowercase terms.
+
+        Handles hyphenated terms (e.g., 'self-attention') by indexing both
+        the full term and its components for better recall on technical text.
+        """
+        tokens = re.findall(r"\b[a-z0-9]+(?:[-'][a-z0-9]+)*\b", text.lower())
+        expanded = []
+        for token in tokens:
+            expanded.append(token)
+            if "-" in token:
+                expanded.extend(token.split("-"))
+        return expanded
