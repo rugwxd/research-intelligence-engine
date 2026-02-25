@@ -1,0 +1,47 @@
+# Research Intelligence Engine - Default Configuration
+
+arxiv:
+  max_results_per_query: 150
+  queries:
+    - "large language models"
+    - "transformer architecture"
+    - "reinforcement learning"
+    - "computer vision deep learning"
+    - "neural network optimization"
+  rate_limit_seconds: 3.0
+  output_dir: "data/raw"
+
+chunking:
+  chunk_size: 512
+  chunk_overlap: 64
+  min_chunk_length: 50
+
+embeddings:
+  model_name: "all-MiniLM-L6-v2"
+  batch_size: 64
+  normalize: true
+
+vectordb:
+  index_path: "data/vectordb/faiss.index"
+  metadata_path: "data/vectordb/metadata.pkl"
+  index_type: "flat"  # flat | ivf | hnsw
+
+retrieval:
+  top_k: 10
+  rerank_top_k: 5
+  similarity_threshold: 0.3
+
+generation:
+  model: "claude-sonnet-4-20250514"
+  max_tokens: 2048
+  temperature: 0.1
+
+evaluation:
+  num_samples: 50
+  faithfulness_threshold: 0.7
+  relevance_threshold: 0.6
+
+logging:
+  level: "INFO"
+  format: "%(asctime)s | %(name)s | %(levelname)s | %(message)s"
+  file: "logs/rie.log"

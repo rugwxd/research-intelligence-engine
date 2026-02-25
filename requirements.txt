@@ -1,0 +1,34 @@
+# Core
+python-dotenv>=1.0.0
+pydantic>=2.0.0
+pydantic-settings>=2.0.0
+
+# Data ingestion
+requests>=2.31.0
+feedparser>=6.0.0
+pandas>=2.0.0
+
+# Vector store & embeddings
+sentence-transformers>=2.2.0
+faiss-cpu>=1.7.4
+numpy>=1.24.0
+
+# Generation
+anthropic>=0.40.0
+
+# Evaluation
+ragas>=0.1.0
+datasets>=2.14.0
+
+# UI
+streamlit>=1.28.0
+
+# Testing
+pytest>=7.4.0
+pytest-cov>=4.1.0
+pytest-asyncio>=0.21.0
+
+# Logging & utilities
+rich>=13.0.0
+tenacity>=8.2.0
+tqdm>=4.65.0
