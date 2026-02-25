@@ -55,6 +55,16 @@ class Generator:
         Returns:
             Generated answer string.
         """
+        # Guard against excessively long context that may exceed token limits
+        max_context_chars = self.config.max_tokens * 3  # rough char-to-token ratio
+        if len(context) > max_context_chars:
+            logger.warning(
+                "Context truncated from %d to %d chars to fit token budget",
+                len(context),
+                max_context_chars,
+            )
+            context = context[:max_context_chars] + "\n\n[Context truncated...]"
+
         user_message = USER_PROMPT_TEMPLATE.format(
             context=context,
             query=query,
