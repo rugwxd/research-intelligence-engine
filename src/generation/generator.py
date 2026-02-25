@@ -72,11 +72,14 @@ class Generator:
 
         answer = response.content[0].text
         elapsed = (time.perf_counter() - start) * 1000
+        input_tokens = response.usage.input_tokens
+        output_tokens = response.usage.output_tokens
 
         logger.info(
-            "Generated answer (%.1fms, %d tokens): %s...",
+            "Generated answer (%.1fms, %d input + %d output tokens): %s...",
             elapsed,
-            response.usage.output_tokens,
+            input_tokens,
+            output_tokens,
             answer[:100],
         )
 
