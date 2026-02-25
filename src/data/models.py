@@ -19,9 +19,10 @@ class Paper:
     updated: datetime
     pdf_url: str
     primary_category: str
+    full_text: str = ""
 
     def to_dict(self) -> dict:
-        return {
+        data = {
             "arxiv_id": self.arxiv_id,
             "title": self.title,
             "abstract": self.abstract,
@@ -32,6 +33,9 @@ class Paper:
             "pdf_url": self.pdf_url,
             "primary_category": self.primary_category,
         }
+        if self.full_text:
+            data["full_text"] = self.full_text
+        return data
 
     @classmethod
     def from_dict(cls, data: dict) -> Paper:
@@ -45,6 +49,7 @@ class Paper:
             updated=datetime.fromisoformat(data["updated"]),
             pdf_url=data["pdf_url"],
             primary_category=data["primary_category"],
+            full_text=data.get("full_text", ""),
         )
 
 
