@@ -211,7 +211,7 @@ research-intelligence-engine/
 ### Installation
 
 ```bash
-git clone https://github.com/rugwxd/research-intelligence-engine.git
+git clone https://github.com/rugwed9/research-intelligence-engine.git
 cd research-intelligence-engine
 
 python -m venv venv
